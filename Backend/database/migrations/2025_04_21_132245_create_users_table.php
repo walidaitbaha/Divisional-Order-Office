@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->rememberToken();
+            $table->enum("role",["agent","chef_division","secretaire_general","admin"]);
+            $table->foreignId("division_id")->nullable()->constrained("divisions")->onDelete("cascade");
             $table->timestamps();
         });
 
