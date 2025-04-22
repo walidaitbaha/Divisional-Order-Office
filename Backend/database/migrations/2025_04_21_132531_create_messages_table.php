@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
-            $table->foreignId('from_division_id')->constrained('divisions')->onDelete('cascade');
-            $table->foreignId('to_division_id')->constrained('divisions')->onDelete('cascade');
+            $table->foreignId('from_division_id')->constrained('devisions')->onDelete('cascade');
+            $table->foreignId('to_division_id')->constrained('devisions')->onDelete('cascade');
             $table->string("objet");
             $table->enum("type",["entrant","sortant"]);
             $table->date("date_reception")->nullable();

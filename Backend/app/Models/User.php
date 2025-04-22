@@ -36,6 +36,11 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
+    public function devisions()
+{
+    return $this->belongsTo(Devision::class);
+}
+
     /**
      * Get the attributes that should be cast.
      *

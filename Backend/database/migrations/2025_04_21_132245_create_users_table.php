@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("division_id")->nullable()->constrained("divisions")->onDelete("cascade");
+            $table->foreignId("division_id")->nullable()->constrained("devisions")->onDelete("cascade");
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum("role",["agent","chef_division","secretaire_general","admin"]);
+            $table->enum("role",["agent","chef_division","saisie","admin"]);
             $table->timestamps();
         });
 
