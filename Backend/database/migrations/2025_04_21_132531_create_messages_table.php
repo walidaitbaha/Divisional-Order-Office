@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('courriers', function (Blueprint $table) {
+        Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->string("reference");
+            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
+            $table->foreignId('from_division_id')->constrained('divisions')->onDelete('cascade');
+            $table->foreignId('to_division_id')->constrained('divisions')->onDelete('cascade');
             $table->string("objet");
-            $table->enum("type",["entrant","sortant","interne"]);
+            $table->enum("type",["entrant","sortant"]);
             $table->date("date_reception")->nullable();
             $table->date("date_envoi")->nullable();
             $table->string("expediteur")->nullable();
-            $table->string("distinataire")->nullable();
+            $table->string("destinataire")->nullable();
             $table->string("fichier_path")->nullable();
-            $table->enum("status",["en_attente","transféré", "archivé"])->default("en_attente");
-            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('courriers');
+        Schema::dropIfExists('messages');
     }
 };
