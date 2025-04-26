@@ -2,9 +2,9 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DevisionController;
+use App\Http\Controllers\MessageController;
 use App\Http\Middleware\CheckAuthentication;
 use App\Http\Middleware\CheckRole;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix("auth")->group(function () {
@@ -18,4 +18,18 @@ Route::prefix("auth")->group(function () {
 Route::prefix("devision")->group(function () {
     Route::get("/get", [DevisionController::class, "get"]);
     Route::post("/create", [DevisionController::class, "create"])->middleware(CheckRole::class . ":admin");
+});
+
+Route::prefix("message")->group(function () {
+    Route::get("/getMessageOfDevision", [MessageController::class, "getMessageOfDevision"])
+    ->middleware( CheckRole::class . ":saisie");
+
+    Route::post("/store", [MessageController::class, "store"])
+        ->middleware( CheckRole::class . ":saisie");
+
+    Route::put("/update/{id}", [MessageController::class, "update"])
+        ->middleware( CheckRole::class . ":saisie");
+
+    Route::delete("/delete/{id}", [MessageController::class, "destroy"])
+        ->middleware( CheckRole::class . ":saisie");
 });

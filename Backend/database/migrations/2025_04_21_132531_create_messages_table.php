@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger("num")->nullable()->unique();
+            $table->string("ref");
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->foreignId('from_division_id')->constrained('devisions')->onDelete('cascade');
             $table->foreignId('to_division_id')->constrained('devisions')->onDelete('cascade');
