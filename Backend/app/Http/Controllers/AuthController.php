@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Exception;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Hash;
@@ -11,7 +12,6 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-
     public function createAdmin(Request $request)
 {
     try {
@@ -69,7 +69,8 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $user = JWTAuth::parseToken()->authenticate();
+        try{
+            $user = JWTAuth::parseToken()->authenticate();
 
         if (!$user || $user->role !== 'admin') {
             return response()->json(['message' => 'Unauthorized. Admins only.'], 403);
@@ -80,7 +81,7 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'division_id' => 'nullable|exists:devisions,id',
-            'role' => 'required|in:agent,chef_division,saisie,admin',
+            'role' => 'required|in:chef_division,saisie,admin',
         ]);
 
         $user = User::create([
@@ -98,6 +99,9 @@ class AuthController extends Controller
             'token' => $token,
             'user' => $user,
         ], 201);
+        }catch(Exception $e){
+            return response()->json(["message" => $e->getMessage()],500);
+        }
     }
 
     public function logout()

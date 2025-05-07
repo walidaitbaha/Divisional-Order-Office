@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Button } from "../../components/UI/Button";
 import { getMessages } from "../../services/messageService";
 import { format } from "date-fns";
-import { FiFile, FiPlus, FiInfo, FiChevronRight } from "react-icons/fi";
-import { AddMessage } from "../../components/Modals/AddMessage";
+import { FiFile, FiPlus, FiChevronRight } from "react-icons/fi";
+import { MessageModalWrapper } from "../../components/Modals/MessageModalWrapper";
 
 export const HomeS = () => {
   const [showModal, setShowModal] = useState(false);
   const [messages, setMessages] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [filterType, setFilterType] = useState("");
 
   const fetchMessages = async (currentPage = 1) => {
     try {
@@ -22,25 +23,32 @@ export const HomeS = () => {
     }
   };
 
+  const filteredMessages = messages.filter((msg) => {
+    const matchesType = filterType
+      ? msg.type?.toLowerCase().includes(filterType.toLowerCase())
+      : true;
+
+    return matchesType;
+  });
+
   useEffect(() => {
     fetchMessages(page);
   }, [page]);
 
   const formatDate = (dateString) => {
-    if (!dateString) return "Non spécifiée";
+    if (!dateString) return "غير محدد";
     return format(new Date(dateString), "dd MMM yyyy HH:mm");
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-4 min-h-screen">
-      <AddMessage
+    <div className="max-w-6xl mx-auto p-4 min-h-screen text-right" dir="rtl">
+      <MessageModalWrapper
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         onSuccess={() => fetchMessages(page)}
       />
 
       {/* Header */}
-
       <div className="flex justify-between items-center py-4 border-b border-gray-100">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-full bg-indigo-50">
@@ -48,36 +56,48 @@ export const HomeS = () => {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-              Messages du Bureau d'Ordre
+              الرسائل الواردة والصادرة 
             </h1>
             <span className="text-xs text-gray-500 font-medium">
-              {messages.length} messages
+              {messages.length} رسالة
             </span>
           </div>
         </div>
+        <div className="flex items-center gap-4">
+          <select
+            type="text"
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="border border-gray-300 rounded-md px-3 py-2 text-right"
+          >
+            <option value="">الكل</option>
+            <option value="entrant">وارد</option>
+            <option value="sortant">صادر</option>
+          </select>
 
-        <Button
-          text="Nouveau"
-          width="w-28"
-          onClick={() => setShowModal(true)}
-          className="h-7 px-2.5 py-0.5 text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md transition-all ring-1 ring-indigo-100 hover:ring-indigo-200"
-          icon={
-            <FiPlus className="w-3 h-3 transform transition-transform group-hover:rotate-90" />
-          }
-        />
+          <Button
+            text="رسالة جديدة"
+            width="w-28"
+            onClick={() => setShowModal(true)}
+            className="h-7 px-2.5 py-0.5 text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md transition-all ring-1 ring-indigo-100 hover:ring-indigo-200"
+            icon={
+              <FiPlus className="w-3 h-3 transform transition-transform group-hover:rotate-90" />
+            }
+          />
+        </div>
       </div>
 
       {/* Messages Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {messages.length === 0 ? (
+        {filteredMessages.length === 0 ? (
           <div className="col-span-full text-center p-12 bg-white rounded-xl shadow-sm border border-gray-100">
             <div className="text-gray-400 mb-4">
               <FiFile className="w-16 h-16 mx-auto" />
             </div>
-            <p className="text-gray-500 text-lg">Aucun message disponible</p>
+            <p className="text-gray-500 text-lg">لا توجد رسائل متاحة</p>
           </div>
         ) : (
-          messages.map((msg) => (
+          filteredMessages.map((msg) => (
             <div
               key={msg.id}
               className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100"
@@ -90,7 +110,7 @@ export const HomeS = () => {
                       #{msg.num}
                     </span>
                     {msg.ref && (
-                      <span className="ml-2 text-sm text-gray-500">
+                      <span className="mr-2 text-sm text-gray-500">
                         ({msg.ref})
                       </span>
                     )}
@@ -102,7 +122,7 @@ export const HomeS = () => {
                         : "bg-blue-100 text-blue-700"
                     }`}
                   >
-                    {msg.type}
+                    {msg.type === "entrant" ? "وارد" : "صادر"}
                   </span>
                 </div>
 
@@ -114,12 +134,12 @@ export const HomeS = () => {
 
                   <div className="text-sm text-gray-600 space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium">Exp:</span>
-                      <span>{msg.expediteur || "Non spécifié"}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">Dest:</span>
-                      <span>{msg.destinataire || "Non spécifié"}</span>
+                      {msg.type === "entrant" ? (
+                        <span className="font-medium">المرسل:</span>
+                      ) : (
+                        <span className="font-medium">المستلم:</span>
+                      )}
+                      <span>{msg.exp_des?.name}</span>
                     </div>
                   </div>
                 </div>
@@ -131,8 +151,8 @@ export const HomeS = () => {
                 <div className="pt-2">
                   <div className="flex justify-between items-center text-sm text-gray-500">
                     <div className="space-y-1">
-                      <p>Envoyé: {formatDate(msg.date_envoi)}</p>
-                      <p>Reçu: {formatDate(msg.date_reception)}</p>
+                      <p>تاريخ الإرسال: {formatDate(msg.date_envoi)}</p>
+                      <p>تاريخ الاستلام: {formatDate(msg.date_reception)}</p>
                     </div>
                     {msg.fichier_path && (
                       <a
@@ -160,19 +180,19 @@ export const HomeS = () => {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-4 py-2 border border-gray-300 rounded-l-md text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              className="px-4 py-2 border border-gray-300 rounded-r-md text-gray-700 hover:bg-gray-50 disabled:opacity-50"
             >
-              Précédent
+              السابق
             </button>
             <span className="px-4 py-2 border-t border-b border-gray-300 text-gray-700">
-              Page {page} / {totalPages}
+              الصفحة {page} من {totalPages}
             </span>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="px-4 py-2 border border-gray-300 rounded-r-md text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              className="px-4 py-2 border border-gray-300 rounded-l-md text-gray-700 hover:bg-gray-50 disabled:opacity-50"
             >
-              Suivant
+              التالي
             </button>
           </nav>
         </div>

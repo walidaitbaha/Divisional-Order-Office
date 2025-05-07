@@ -5,6 +5,7 @@ export const Notification = ({ message, type }) => {
   const [open, setOpen] = useState(true);
   const [progress, setProgress] = useState(100);
   const [isHovered, setIsHovered] = useState(false);
+  
 
   useEffect(() => {
     if (!open || isHovered) return;
@@ -52,9 +53,10 @@ export const Notification = ({ message, type }) => {
             )}
           </div>
           
+          
           <div className="flex-1 space-y-1">
             <h3 className="text-base font-semibold text-gray-900">
-              {type === "success" ? "Success" : "Error"}
+              {type === "success" ? "نجاح" : "خطأ"}
             </h3>
             <p className="text-sm text-gray-700">{message}</p>
           </div>

@@ -49,4 +49,52 @@ class DevisionController extends Controller
             return response()->json(["message" => $e->getMessage()],500);
         }
     }
+
+    public function update(Request $request, $id){
+        try{
+            $user = JWTAuth::parseToken()->authenticate();
+
+            if (!$user || $user->role !== 'admin') {
+                return response()->json(['message' => 'Unauthorized. Admins only.'], 403);
+            }
+
+            $devision = Devision::findOrFail($id);
+
+            $validated = $request->validate([
+                "name" => 'required|string|max:255',
+                "description" =>'required|string|max:255',
+            ]);
+
+            $devision->update($validated);
+
+            return response()->json([
+                "message" => "Devision updated successfull",
+                'data' => $devision
+            ],200);
+
+        }catch(Exception $e){
+            return response()->json(["message" => $e->getMessage()],500);
+        }
+    }
+
+    public function destroy($id){
+        try{
+            $user = JWTAuth::parseToken()->authenticate();
+
+            if (!$user || $user->role !== 'admin') {
+                return response()->json(['message' => 'Unauthorized. Admins only.'], 403);
+            }
+
+            $devision = Devision::findOrFail($id);
+
+            $devision->delete();
+
+            return response()->json([
+                "message" => "Devision deleted successfull",
+                'data' => $devision
+            ],200);
+        }catch(Exception $e){
+            return response()->json(["message" => $e->getMessage()],500);
+        }
+    }
 }

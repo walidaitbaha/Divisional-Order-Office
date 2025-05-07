@@ -1,0 +1,187 @@
+import React, { useState, useEffect } from 'react'
+import { updateUser } from '../../services/userService'
+import { getDevisions } from '../../services/devisionServices'
+
+export const EditUser = ({ user, onClose, refreshData }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    role: 'agent',
+    division_id: '',
+    password: '',
+    password_confirmation: ''
+  })
+  const [divisions, setDivisions] = useState([])
+  const [errors, setErrors] = useState({})
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    const fetchDivisions = async () => {
+      try {
+        const response = await getDevisions()
+        setDivisions(response.data.Devisions)
+      } catch (error) {
+        console.error('Error fetching divisions:', error)
+      }
+    }
+    fetchDivisions()
+  }, [])
+
+  // Initialize form with user data
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        division_id: user.division_id || '',
+        password: '',
+        password_confirmation: ''
+      })
+    }
+  }, [user])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setErrors({})
+    
+    try {
+      // Only send password fields if they're filled
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        role: formData.role,
+        division_id: formData.division_id
+      }
+
+      if (formData.password) {
+        payload.password = formData.password
+        payload.password_confirmation = formData.password_confirmation
+      }
+
+      await updateUser(user.id, payload)
+      refreshData()
+      onClose()
+    } catch (error) {
+      if (error.response?.data?.errors) {
+        setErrors(error.response.data.errors)
+      } else {
+        console.error('Error updating user:', error)
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md rtl">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">تعديل المستخدم</h2>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">✕</button>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">الاسم الكامل</label>
+            <input
+              type="text"
+              required
+              className={`mt-1 block w-full rounded-md ${errors.name ? 'border-red-500' : 'border-gray-300'} shadow-sm`}
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            />
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name[0]}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">البريد الإلكتروني</label>
+            <input
+              type="email"
+              required
+              className={`mt-1 block w-full rounded-md ${errors.email ? 'border-red-500' : 'border-gray-300'} shadow-sm`}
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            />
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email[0]}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">الدور</label>
+            <select
+              required
+              className={`mt-1 block w-full rounded-md ${errors.role ? 'border-red-500' : 'border-gray-300'} shadow-sm`}
+              value={formData.role}
+              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+            >
+              <option value="agent">وكيل</option>
+              <option value="chef_division">رئيس قسم</option>
+              <option value="saisie">كتابة</option>
+              <option value="admin">مسؤول</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">القسم</label>
+            <select
+              className={`mt-1 block w-full rounded-md ${errors.division_id ? 'border-red-500' : 'border-gray-300'} shadow-sm`}
+              value={formData.division_id}
+              onChange={(e) => setFormData({ ...formData, division_id: e.target.value })}
+            >
+              <option value="">اختر القسم</option>
+              {divisions.map(division => (
+                <option key={division.id} value={division.id}>{division.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="pt-4 border-t border-gray-200">
+            <h3 className="text-sm font-medium text-gray-700 mb-2">تغيير كلمة المرور (اختياري)</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">كلمة المرور الجديدة</label>
+                <input
+                  type="password"
+                  className={`mt-1 block w-full rounded-md ${errors.password ? 'border-red-500' : 'border-gray-300'} shadow-sm`}
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                />
+                {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password[0]}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">تأكيد كلمة المرور الجديدة</label>
+                <input
+                  type="password"
+                  className={`mt-1 block w-full rounded-md ${errors.password_confirmation ? 'border-red-500' : 'border-gray-300'} shadow-sm`}
+                  value={formData.password_confirmation}
+                  onChange={(e) => setFormData({ ...formData, password_confirmation: e.target.value })}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2 mt-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+              disabled={isLoading}
+            >
+              إلغاء
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+              disabled={isLoading}
+            >
+              {isLoading ? 'جارٍ التحديث...' : 'تحديث المستخدم'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}

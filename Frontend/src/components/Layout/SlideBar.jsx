@@ -1,7 +1,15 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FaInbox, FaUser, FaSignOutAlt, FaChevronRight } from 'react-icons/fa';
+import {
+  FaInbox,
+  FaUser,
+  FaSignOutAlt,
+  FaChevronRight,
+  FaTachometerAlt,
+  FaBuilding,
+  FaExchangeAlt,
+  FaChevronLeft
+} from 'react-icons/fa';
 import { Logout } from '../../services/authServices';
-
 
 const SideBar = () => {
   const location = useLocation();
@@ -20,32 +28,47 @@ const SideBar = () => {
     try {
       await Logout(); 
     } catch (error) {
-      console.error('Erreur logout côté serveur :', error);
+      console.error('خطأ في تسجيل الخروج:', error);
     } finally {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      navigate('/login');
+      navigate('/');
     }
   };
 
   return (
     <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
       <div className="p-5 pb-3 border-b border-gray-200">
-        <h2 className="text-lg font-bold text-gray-800">Bureau d'Ordre</h2>
-        <p className="text-sm text-gray-500 mt-1">Gestion des courriers</p>
+        <h2 className="text-lg font-bold text-gray-800"> مكتب الضبط الرقمي</h2>
+        <p className="text-sm text-gray-500 mt-1">إدارة المراسلات</p>
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1">
         {basePath === 'admin' && (
           <>
-            <a href="/admin/dashboard" className={linkClass('/admin/dashboard')}>
+            <a href="/admin/devisions" className={linkClass('/admin/devisions')}>
+              <FaBuilding className="w-5 h-5" />
+              <span> الإدارات الداخلية</span>
+              <FaChevronLeft className="w-3 h-3 ml-auto" />
+            </a>
+            <a href="/admin/courriers" className={linkClass('/admin/courriers')}>
               <FaInbox className="w-5 h-5" />
-              <span>Courriers</span>
-              <FaChevronRight className="w-3 h-3 ml-auto" />
+              <span>المراسلات</span>
+              <FaChevronLeft className="w-3 h-3 ml-auto" />
+            </a>
+            <a href="/admin/courriersdeleted" className={linkClass('/admin/courriersdeleted')}>
+              <FaExchangeAlt className="w-5 h-5" />
+              <span>الرسائل المحذوفة</span>
+              <FaChevronLeft className="w-3 h-3 ml-auto" />
             </a>
             <a href="/admin/utilisateurs" className={linkClass('/admin/utilisateurs')}>
               <FaUser className="w-5 h-5" />
-              <span>Utilisateurs</span>
+              <span>المستخدمون</span>
+              <FaChevronLeft className="w-3 h-3 ml-auto" />
+            </a>
+            <a href="/admin/expDes" className={linkClass('/admin/expDes')}>
+              <FaBuilding className="w-5 h-5" />
+              <span>الإدارات الخارجية</span>
               <FaChevronRight className="w-3 h-3 ml-auto" />
             </a>
           </>
@@ -57,7 +80,7 @@ const SideBar = () => {
               location.pathname === '/chef_division/home' ? 'bg-gray-200' : ''
             }`}
           >
-            <FaInbox /> Courriers
+            <FaInbox /> المراسلات
           </a>
         )}
         {basePath === 'saisie' && (
@@ -67,7 +90,7 @@ const SideBar = () => {
               location.pathname === '/saisie/home' ? 'bg-gray-200' : ''
             }`}
           >
-            <FaInbox /> Courriers
+            <FaInbox /> المراسلات
           </a>
         )}
       </nav>
@@ -78,7 +101,7 @@ const SideBar = () => {
           className="w-full flex items-center gap-3 text-red-600 hover:text-red-700 p-2 rounded-lg transition-colors"
         >
           <FaSignOutAlt className="w-5 h-5" />
-          <span>Déconnexion</span>
+          <span>تسجيل الخروج</span>
         </button>
       </div>
     </div>

@@ -17,14 +17,13 @@ return new class extends Migration
             $table->string("ref");
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->foreignId('from_division_id')->constrained('devisions')->onDelete('cascade');
-            $table->foreignId('to_division_id')->constrained('devisions')->onDelete('cascade');
             $table->string("objet");
             $table->enum("type",["entrant","sortant"]);
             $table->date("date_reception")->nullable();
             $table->date("date_envoi")->nullable();
-            $table->string("expediteur")->nullable();
-            $table->string("destinataire")->nullable();
+            $table->foreignId("exp_des_id")->nullable()->constrained('exp_des')->onDelete('cascade');
             $table->string("fichier_path")->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

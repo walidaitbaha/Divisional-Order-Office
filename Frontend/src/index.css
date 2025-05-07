@@ -3,6 +3,8 @@
 body{
     background-color: white;
     color: black;
+    /* direction: rtl;
+  text-align: right; */
 }
 
 @layer utilities {

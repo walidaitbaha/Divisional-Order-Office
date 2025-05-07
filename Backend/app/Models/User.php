@@ -38,7 +38,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function devisions()
 {
-    return $this->belongsTo(Devision::class);
+    return $this->belongsTo(Devision::class,'division_id');
 }
 
     /**

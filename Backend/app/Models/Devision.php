@@ -12,4 +12,8 @@ class Devision extends Model
 {
     return $this->hasMany(User::class);
 }
+
+public function messages(){
+    return $this->belongsTo(Devision::class);
+}
 }
