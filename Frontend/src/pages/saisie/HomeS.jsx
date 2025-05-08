@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "../../components/UI/Button";
 import { getMessages } from "../../services/messageService";
-import { format } from "date-fns";
 import { FiFile, FiPlus, FiChevronRight } from "react-icons/fi";
 import { MessageModalWrapper } from "../../components/Modals/MessageModalWrapper";
 
@@ -34,11 +33,6 @@ export const HomeS = () => {
   useEffect(() => {
     fetchMessages(page);
   }, [page]);
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "غير محدد";
-    return format(new Date(dateString), "dd MMM yyyy HH:mm");
-  };
 
   return (
     <div className="max-w-6xl mx-auto p-4 min-h-screen text-right" dir="rtl">
