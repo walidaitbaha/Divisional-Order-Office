@@ -14,6 +14,7 @@ export const DeleteDevision = ({ onClose, refreshData, divisionId }) => {
       }, 3000);
       refreshData();
     } catch (error) {
+      setNotification({ message: 'حدث خطأ أثناء الحذف', type: 'error' });
       console.error('حدث خطأ أثناء حذف المصلحة:', error);
     }
   };

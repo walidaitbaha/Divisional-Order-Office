@@ -88,7 +88,8 @@ export const EditMessage = ({ message, onClose, onSave }) => {
         onClose();
       }, 3000);
     } catch (err) {
-      setNotification({ type: "error", message: err.response?.data?.errors });
+      setNotification({ message:  "حدث خطأ أثناء التعديل", type: "error" });
+      console.error("Error updating message:", err); 
     } finally {
       setLoading(false);
     }

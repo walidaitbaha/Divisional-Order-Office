@@ -73,7 +73,7 @@ class MessageController extends Controller
             'type' => 'required|in:entrant,sortant',
             'date_reception' => 'nullable|date',
             'date_envoi' => 'nullable|date',
-            'exp_des_id' => 'nullable|integer|exists:exp_des_id,id',
+            'exp_des_id' => 'nullable|integer|exists:exp_des,id',
             'fichier_path' => 'sometimes|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
         ]);
 

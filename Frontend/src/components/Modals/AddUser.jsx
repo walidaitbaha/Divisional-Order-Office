@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { register } from '../../services/authServices'
 import { getDevisions } from '../../services/devisionServices'
+import { Notification } from '../Layout/Notification'
 
 export const AddUser = ({ onClose, refreshData }) => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ export const AddUser = ({ onClose, refreshData }) => {
   const [divisions, setDivisions] = useState([])
   const [errors, setErrors] = useState({})
   const [isLoading, setIsLoading] = useState(false)
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     const fetchDivisions = async () => {
@@ -36,12 +38,10 @@ export const AddUser = ({ onClose, refreshData }) => {
       await register(formData)
       refreshData()
       onClose()
+      setNotification({ message: 'User created successfully', type: 'success' })
     } catch (error) {
-      if (error.response?.data?.errors) {
-        setErrors(error.response.data.errors)
-      } else {
-        console.error('Error creating user:', error)
-      }
+      setNotification({ message: 'Error creating user', type: 'error' })
+      console.error('Error creating user:', error)
     } finally {
       setIsLoading(false)
     }
@@ -152,6 +152,7 @@ export const AddUser = ({ onClose, refreshData }) => {
           </div>
         </form>
       </div>
+      {notification && <Notification message={notification.message} type={notification.type}/>}
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { updateUser } from '../../services/userService'
 import { getDevisions } from '../../services/devisionServices'
+import { Notification } from '../Layout/Notification'
 
 export const EditUser = ({ user, onClose, refreshData }) => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ export const EditUser = ({ user, onClose, refreshData }) => {
   const [divisions, setDivisions] = useState([])
   const [errors, setErrors] = useState({})
   const [isLoading, setIsLoading] = useState(false)
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     const fetchDivisions = async () => {
@@ -61,14 +63,12 @@ export const EditUser = ({ user, onClose, refreshData }) => {
       }
 
       await updateUser(user.id, payload)
+      setNotification({ message: 'User updated successfully', type: 'success' })
       refreshData()
       onClose()
     } catch (error) {
-      if (error.response?.data?.errors) {
-        setErrors(error.response.data.errors)
-      } else {
-        console.error('Error updating user:', error)
-      }
+      setNotification({ message: 'Error updating user', type: 'error' })
+      console.error('Error updating user:', error)
     } finally {
       setIsLoading(false)
     }
@@ -182,6 +182,7 @@ export const EditUser = ({ user, onClose, refreshData }) => {
           </div>
         </form>
       </div>
+      {notification && <Notification message={notification.message} type={notification.type} />}
     </div>
   )
 }

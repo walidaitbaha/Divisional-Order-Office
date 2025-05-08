@@ -87,91 +87,69 @@ export const HomeS = () => {
         </div>
       </div>
 
-      {/* Messages Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredMessages.length === 0 ? (
-          <div className="col-span-full text-center p-12 bg-white rounded-xl shadow-sm border border-gray-100">
-            <div className="text-gray-400 mb-4">
-              <FiFile className="w-16 h-16 mx-auto" />
-            </div>
-            <p className="text-gray-500 text-lg">لا توجد رسائل متاحة</p>
-          </div>
-        ) : (
-          filteredMessages.map((msg) => (
-            <div
-              key={msg.id}
-              className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100"
-            >
-              <div className="p-4 space-y-3">
-                {/* Card Header */}
-                <div className="flex justify-between items-start">
-                  <div>
-                    <span className="font-mono text-sm text-indigo-600">
-                      #{msg.num}
-                    </span>
-                    {msg.ref && (
-                      <span className="mr-2 text-sm text-gray-500">
-                        ({msg.ref})
-                      </span>
-                    )}
-                  </div>
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                      msg.type === "entrant"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-blue-100 text-blue-700"
-                    }`}
-                  >
-                    {msg.type === "entrant" ? "وارد" : "صادر"}
-                  </span>
-                </div>
-
-                {/* Main Content */}
-                <div className="space-y-2">
-                  <h3 className="font-medium text-gray-900 line-clamp-2">
-                    {msg.objet}
-                  </h3>
-
-                  <div className="text-sm text-gray-600 space-y-1">
-                    <div className="flex items-center gap-2">
-                      {msg.type === "entrant" ? (
-                        <span className="font-medium">المرسل:</span>
-                      ) : (
-                        <span className="font-medium">المستلم:</span>
-                      )}
-                      <span>{msg.exp_des?.name}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Divider */}
-                <div className="border-t border-gray-100"></div>
-
-                {/* Footer */}
-                <div className="pt-2">
-                  <div className="flex justify-between items-center text-sm text-gray-500">
-                    <div className="space-y-1">
-                      <p>تاريخ الإرسال: {formatDate(msg.date_envoi)}</p>
-                      <p>تاريخ الاستلام: {formatDate(msg.date_reception)}</p>
-                    </div>
-                    {msg.fichier_path && (
-                      <a
-                        href={msg.fichier_path}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
-                      >
-                        <FiFile className="w-4 h-4" />
-                        <FiChevronRight className="w-3 h-3" />
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))
-        )}
+      {/* Messages Table */}
+<div className="overflow-x-auto mt-6 bg-white rounded-lg shadow-sm border border-gray-100">
+  {filteredMessages.length === 0 ? (
+    <div className="text-center p-12">
+      <div className="text-gray-400 mb-4">
+        <FiFile className="w-16 h-16 mx-auto" />
       </div>
+      <p className="text-gray-500 text-lg">لا توجد رسائل متاحة</p>
+    </div>
+  ) : (
+    <table className="min-w-full text-sm text-right text-gray-700">
+      <thead className="bg-gray-50 text-xs text-gray-500 font-semibold border-b">
+        <tr>
+          <th className="px-4 py-3">#الرقم</th>
+          <th className="px-4 py-3">المرجع</th>
+          <th className="px-4 py-3">الموضوع</th>
+          <th className="px-4 py-3">النوع</th>
+          <th className="px-4 py-3">المرسل/المستلم</th>
+          <th className="px-4 py-3">تاريخ الإرسال</th>
+          <th className="px-4 py-3">تاريخ الاستلام</th>
+          <th className="px-4 py-3">الملف</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filteredMessages.map((msg) => (
+          <tr key={msg.id} className="border-t hover:bg-gray-50">
+            <td className="px-4 py-2 font-mono text-indigo-600">#{msg.num}</td>
+            <td className="px-4 py-2">{msg.ref || "-"}</td>
+            <td className="px-4 py-2">{msg.objet}</td>
+            <td className="px-4 py-2">
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                  msg.type === "entrant"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-blue-100 text-blue-700"
+                }`}
+              >
+                {msg.type === "entrant" ? "وارد" : "صادر"}
+              </span>
+            </td>
+            <td className="px-4 py-2">{msg.exp_des?.name || "-"}</td>
+            <td className="px-4 py-2">{msg.date_envoi}</td>
+            <td className="px-4 py-2">{msg.date_reception}</td>
+            <td className="px-4 py-2">
+              {msg.fichier_path && (
+                <a
+                  href={msg.fichier_path}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
+                >
+                  <FiFile className="w-4 h-4" />
+                  <FiChevronRight className="w-3 h-3" />
+                </a>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
+</div>
+
 
       {/* Pagination */}
       {totalPages > 1 && (

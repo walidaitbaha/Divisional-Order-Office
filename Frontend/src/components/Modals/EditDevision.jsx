@@ -28,6 +28,7 @@ export const EditDevision = ({ onClose, refreshData, division }) => {
       }, 3000);
       refreshData();
     } catch (error) {
+      setNotification({ message: 'حدث خطأ أثناء تعديل المصلحة', type: 'error' });
       console.error('حدث خطأ أثناء تعديل المصلحة:', error);
     }
   };

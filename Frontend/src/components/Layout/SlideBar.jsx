@@ -48,7 +48,7 @@ const SideBar = () => {
           <>
             <a href="/admin/devisions" className={linkClass('/admin/devisions')}>
               <FaBuilding className="w-5 h-5" />
-              <span> الإدارات الداخلية</span>
+              <span> المصالح الداخلية</span>
               <FaChevronLeft className="w-3 h-3 ml-auto" />
             </a>
             <a href="/admin/courriers" className={linkClass('/admin/courriers')}>
@@ -68,8 +68,8 @@ const SideBar = () => {
             </a>
             <a href="/admin/expDes" className={linkClass('/admin/expDes')}>
               <FaBuilding className="w-5 h-5" />
-              <span>الإدارات الخارجية</span>
-              <FaChevronRight className="w-3 h-3 ml-auto" />
+              <span>المصالح الخارجية</span>
+              <FaChevronLeft className="w-3 h-3 ml-auto" />
             </a>
           </>
         )}

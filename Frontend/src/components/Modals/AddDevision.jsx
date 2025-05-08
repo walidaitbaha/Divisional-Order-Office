@@ -17,6 +17,7 @@ export const AddDevision = ({ onClose, refreshData }) => {
       setTimeout(() => onClose(), 3000);
       refreshData();
     } catch (error) {
+      setNotification({ message: 'حدث خطأ أثناء إضافة المصلحة', type: 'error' });
       console.error('حدث خطأ أثناء إضافة المصلحة:', error);
     }
   };

@@ -57,12 +57,8 @@ export const AddMessage = ({ isOpen, onClose, onSuccess, selectedType }) => {
       setTimeout(() => {
         onClose();
       }, 3000);
-    } catch (err) {
-      if (err.response?.data?.error) {
-        setNotification({ message: err.response.data.error, type: "error" });
-      } else {
+    } catch {
         setNotification({ message: "حدث خطأ أثناء الإرسال", type: "error" });
-      }
     } finally {
       setLoading(false);
     }
@@ -98,7 +94,7 @@ export const AddMessage = ({ isOpen, onClose, onSuccess, selectedType }) => {
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl border border-gray-100 transform transition-all">
         <div className="flex justify-between items-center p-6 border-b border-gray-100">
           <h3 className="text-xl font-semibold text-gray-900">
-            Nouveau Message
+          رسالة جديدة
           </h3>
           <button
             onClick={onClose}
