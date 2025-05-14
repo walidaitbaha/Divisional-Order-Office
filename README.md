@@ -87,7 +87,7 @@ The **Divisional Order Office System**  is a web-based application designed to s
    Set up the database credentials
 
 ### Setup the react frontend app
-1. express backend setup
+1. react front-end setup
    ```
    cd front-end
    npm install
